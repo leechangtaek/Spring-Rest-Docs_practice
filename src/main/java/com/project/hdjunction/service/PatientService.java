@@ -21,7 +21,7 @@ public class PatientService {
     private final HospitalRepository hospitalRepository;
     private static final Map<Integer, AtomicInteger> hospitalCounters = new HashMap<>();
 
-    public String createPatient(CreatePatientRequest request) {
+    public int createPatient(CreatePatientRequest request) {
         Hospital hospital = hospitalRepository.findById(request.getHospital_id()).get();
 
         Patient patient = new Patient();
@@ -38,20 +38,25 @@ public class PatientService {
 
         patientRepository.save(patient);
 
-        return patient_no;
+        return patient.getId();
     }
 
     public void editPatient(EditPatientRequest request) {
-        Patient findPatient = patientRepository.findById(request.getPatient_id()).get();
-        if(findPatient == null){
-            throw new NullPointerException("존재하는 환자가 없습니다.");
-        }
+
         Patient patient = new Patient();
         patient.setId(request.getPatient_id());
         patient.setPatient_nm(request.getPatient_nm());
         patient.setGender_cd(request.getGender_cd());
         patient.setBirth(request.getBirth());
         patient.setPhone_no(request.getPhone_no());
+    }
+
+    public Patient findById(int patient_id) {
+        return patientRepository.findById(patient_id).get();
+    }
+
+    public void deletePatient(int patient_id) {
+        patientRepository.deleteById(patient_id);
     }
 
     private String generatePatientNo(int hospital_id) {
@@ -63,6 +68,7 @@ public class PatientService {
         return String.format("%s-%04d", date, hospitalUniqueId);
 
     }
+
 
 
 }
