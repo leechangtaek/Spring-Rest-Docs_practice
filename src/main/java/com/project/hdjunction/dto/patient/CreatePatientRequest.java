@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class CreatePatientRequest {
 
-    @NotEmpty
+    @NotNull
     private int hospital_id;
 
     @NotNull

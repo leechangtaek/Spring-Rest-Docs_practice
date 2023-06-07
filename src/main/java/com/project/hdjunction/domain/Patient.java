@@ -1,5 +1,6 @@
 package com.project.hdjunction.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,8 @@ public class Patient {
     @Column(name="patient_id")
     private int id;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id")
     private Hospital hospital;
 
@@ -29,6 +31,7 @@ public class Patient {
     private String birth;
     private String phone_no;
 
-    @OneToMany(mappedBy = "patient")
+    @JsonIgnore
+    @OneToMany( mappedBy = "patient")
     private List<Visit> visits;
 }

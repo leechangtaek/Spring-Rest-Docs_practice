@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class EditPatientRequest {
 
-    @NotEmpty
+    @NotNull
     private int patient_id;
 
     private String patient_nm;

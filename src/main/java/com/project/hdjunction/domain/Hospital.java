@@ -1,5 +1,6 @@
 package com.project.hdjunction.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,9 +23,11 @@ public class Hospital {
     private String medial_no;
     private String director_nm;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "hospital")
     private List<Patient> patients;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "hospital")
     private List<Visit> visits;
 

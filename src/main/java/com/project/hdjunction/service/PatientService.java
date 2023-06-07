@@ -4,6 +4,7 @@ import com.project.hdjunction.domain.Hospital;
 import com.project.hdjunction.domain.Patient;
 import com.project.hdjunction.dto.patient.CreatePatientRequest;
 import com.project.hdjunction.dto.patient.EditPatientRequest;
+import com.project.hdjunction.dto.patient.PatientResponse;
 import com.project.hdjunction.repository.HospitalRepository;
 import com.project.hdjunction.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,20 +22,11 @@ public class PatientService {
     private final HospitalRepository hospitalRepository;
     private static final Map<Integer, AtomicInteger> hospitalCounters = new HashMap<>();
 
-    public int createPatient(CreatePatientRequest request) {
-        Hospital hospital = hospitalRepository.findById(request.getHospital_id()).get();
-
-        Patient patient = new Patient();
-        patient.setHospital(hospital);
+    public int createPatient(Patient patient) {
 
         // 환자 등록 번호 생성 로직
-        String patient_no = generatePatientNo(request.getHospital_id());
+        String patient_no = generatePatientNo(patient.getHospital().getId());
         patient.setPatient_no(patient_no);
-
-        patient.setPatient_nm(request.getPatient_nm());
-        patient.setGender_cd(request.getGender_cd());
-        patient.setBirth(request.getBirth());
-        patient.setPhone_no(request.getPhone_no());
 
         patientRepository.save(patient);
 
@@ -49,6 +41,7 @@ public class PatientService {
         patient.setGender_cd(request.getGender_cd());
         patient.setBirth(request.getBirth());
         patient.setPhone_no(request.getPhone_no());
+        patientRepository.save(patient);
     }
 
     public Patient findById(int patient_id) {
@@ -70,5 +63,7 @@ public class PatientService {
     }
 
 
-
+    public List<PatientResponse> selectPatient(int patient_id) {
+        return patientRepository.selectPatient(patient_id);
+    }
 }
