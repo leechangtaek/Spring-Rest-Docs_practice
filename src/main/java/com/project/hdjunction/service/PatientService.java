@@ -1,13 +1,12 @@
 package com.project.hdjunction.service;
 
-import com.project.hdjunction.domain.Hospital;
 import com.project.hdjunction.domain.Patient;
-import com.project.hdjunction.dto.patient.CreatePatientRequest;
-import com.project.hdjunction.dto.patient.EditPatientRequest;
-import com.project.hdjunction.dto.patient.PatientResponse;
+import com.project.hdjunction.dto.patient.*;
 import com.project.hdjunction.repository.HospitalRepository;
 import com.project.hdjunction.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -63,7 +62,18 @@ public class PatientService {
     }
 
 
-    public List<PatientResponse> selectPatient(int patient_id) {
+    public List<PatientWithVisitsResponse> selectPatient(int patient_id) {
         return patientRepository.selectPatient(patient_id);
+    }
+
+    public PatientListResponse selectListPatient(PatientSearch patientSearch, Pageable pageable) {
+        Page<PatientOneResponse> patients = patientRepository.selectListPatient(patientSearch,pageable);
+
+        //페이지블럭 처리
+        int nowPage = patients.getPageable().getPageNumber() + 1;
+        int startPage =  Math.max(nowPage - 4, 1);
+        int endPage = Math.min(nowPage+9, patients.getTotalPages()==0?1: patients.getTotalPages());
+
+        return new PatientListResponse(patients.getContent(),nowPage,startPage,endPage);
     }
 }

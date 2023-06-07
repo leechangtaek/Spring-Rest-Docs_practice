@@ -1,15 +1,13 @@
 package com.project.hdjunction.dto.patient;
 
-import com.project.hdjunction.domain.Visit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class PatientResponse {
+public class PatientOneResponse {
 
     private int patient_id;
     private String patient_nm;
@@ -17,7 +15,5 @@ public class PatientResponse {
     private String gender_cd;
     private String birth;
     private String phone_no;
-    private LocalDateTime accept_dt;
-    private String visit_status_cd;
 
 }

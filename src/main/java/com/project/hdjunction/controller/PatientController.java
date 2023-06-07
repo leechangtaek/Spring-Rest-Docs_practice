@@ -2,12 +2,14 @@ package com.project.hdjunction.controller;
 
 import com.project.hdjunction.domain.Hospital;
 import com.project.hdjunction.domain.Patient;
-import com.project.hdjunction.dto.patient.CreatePatientRequest;
-import com.project.hdjunction.dto.patient.EditPatientRequest;
-import com.project.hdjunction.dto.patient.PatientResponse;
+import com.project.hdjunction.dto.patient.*;
 import com.project.hdjunction.service.HospitalService;
 import com.project.hdjunction.service.PatientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,7 +66,7 @@ public class PatientController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
     @GetMapping("/patient/{patientId}")
-    public ResponseEntity<java.util.List<PatientResponse>> selectPatient(@PathVariable("patientId") int patient_id){
+    public ResponseEntity<java.util.List<PatientWithVisitsResponse>> selectPatient(@PathVariable("patientId") int patient_id){
         try{
             Patient findPatient = patientService.findById(patient_id);
         }catch(NoSuchElementException e){
@@ -73,5 +75,15 @@ public class PatientController {
 
         return new ResponseEntity<>(patientService.selectPatient(patient_id), HttpStatus.OK);
     }
+    @GetMapping("/patients")
+    public ResponseEntity<PatientListResponse> selectListPatient(@RequestParam(required = false) PatientSearch patientSearch,
+                                                                 @RequestParam(value = "size", defaultValue = "10") int size,
+                                                                 @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
+        pageable = PageRequest.of(0,size);
+
+        return new ResponseEntity<>(patientService.selectListPatient(patientSearch,pageable), HttpStatus.OK);
+    }
+
+
 
 }
