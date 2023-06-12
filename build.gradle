@@ -2,15 +2,24 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.12'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
+
 
 group = 'com.project'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+//스니펫 디렉토리 설정
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+//bootJar 설정. 스니펫을 이용해 문서 작성 후, build - docs - asciidoc 하위에 생기는 html 파일을 BOOT-INF/classes/static/docs로 복사해준다.
+bootJar {
+	dependsOn asciidoctor
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'BOOT-INF/classes/static/docs'
 	}
 }
 
@@ -27,6 +36,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 	//Querydsl 추가
 	implementation 'com.querydsl:querydsl-jpa'
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
@@ -38,6 +48,28 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+//asciidoctor 설정. 기존에 존재하는 docs를 삭제해준다.
+asciidoctor {
+	dependsOn test
+	inputs.dir snippetsDir
+}
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+
+//build/docs/asciidoc 파일을 src/main/resources/static/docs로 복사해준다.
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
 
 //Querydsl 추가, 자동 생성된 Q클래스 gradle clean으로 제거
 clean {
