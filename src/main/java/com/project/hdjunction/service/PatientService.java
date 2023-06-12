@@ -51,7 +51,7 @@ public class PatientService {
         patientRepository.deleteById(patient_id);
     }
 
-    private String generatePatientNo(int hospital_id) {
+    public String generatePatientNo(int hospital_id) {
 
         AtomicInteger counter = hospitalCounters.computeIfAbsent(hospital_id, id -> new AtomicInteger(0));
         int hospitalUniqueId = counter.getAndIncrement() % 10000;
