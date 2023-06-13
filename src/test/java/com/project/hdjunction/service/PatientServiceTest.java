@@ -51,9 +51,9 @@ public class PatientServiceTest {
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andDo(document("patient/create",
-                        preprocessRequest(prettyPrint()),   // (2)
-                        preprocessResponse(prettyPrint()),  // (3)
-                        requestFields( 						// (4)
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
                                 fieldWithPath("hospital_id").description("사용자 ID"),
                                 fieldWithPath("patient_nm").description("환자명"),
                                 fieldWithPath("gender_cd").description("성별"),
