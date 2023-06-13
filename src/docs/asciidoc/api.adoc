@@ -1,0 +1,19 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== REQUEST
+
+include::{snippets}/patient/create/http-request.adoc[]
+
+== RESPONSE
+
+include::{snippets}/patient/create/http-response.adoc[]
+
+== REQUEST
+
+include::{snippets}/patient/patient-search/http-request.adoc[]
+
+== RESPONSE
+
+include::{snippets}/patient/patient-search/http-response.adoc[]
