@@ -10,16 +10,9 @@ group = 'com.project'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-//스니펫 디렉토리 설정
-ext {
-	snippetsDir = file('build/generated-snippets')
-}
-//bootJar 설정. 스니펫을 이용해 문서 작성 후, build - docs - asciidoc 하위에 생기는 html 파일을 BOOT-INF/classes/static/docs로 복사해준다.
-bootJar {
-	dependsOn asciidoctor
-	copy {
-		from "${asciidoctor.outputDir}"
-		into 'BOOT-INF/classes/static/docs'
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
 	}
 }
 
@@ -49,6 +42,24 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+//스니펫 디렉토리 설정
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+//bootJar 설정. 스니펫을 이용해 문서 작성 후, build - docs - asciidoc 하위에 생기는 html 파일을 BOOT-INF/classes/static/docs로 복사해준다.
+bootJar {
+	dependsOn asciidoctor
+	copy {
+		from "${asciidoctor.outputDir}"
+		into 'BOOT-INF/classes/static/docs'
+	}
+}
+
+test {
+	useJUnitPlatform()
+	outputs.dir snippetsDir
+}
+
 //asciidoctor 설정. 기존에 존재하는 docs를 삭제해준다.
 asciidoctor {
 	dependsOn test
@@ -66,10 +77,9 @@ task copyDocument(type: Copy) {
 	into file("src/main/resources/static/docs")
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+
+build {
+	dependsOn copyDocument
 }
 
 //Querydsl 추가, 자동 생성된 Q클래스 gradle clean으로 제거
