@@ -18,6 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,6 +50,15 @@ public class PatientServiceTest {
                         post("/patient").content(body)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                ;
+                .andDo(document("patient/create",
+                        preprocessRequest(prettyPrint()),   // (2)
+                        preprocessResponse(prettyPrint()),  // (3)
+                        requestFields( 						// (4)
+                                fieldWithPath("hospital_id").description("사용자 ID"),
+                                fieldWithPath("patient_nm").description("환자명"),
+                                fieldWithPath("gender_cd").description("성별"),
+                                fieldWithPath("birth").description("생년월일"),
+                                fieldWithPath("phone_no").description("전화번호")
+                        )));
     }
 }
