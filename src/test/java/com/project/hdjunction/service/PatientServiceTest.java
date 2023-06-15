@@ -3,6 +3,7 @@ package com.project.hdjunction.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.hdjunction.controller.PatientController;
 import com.project.hdjunction.dto.patient.CreatePatientRequest;
+import com.project.hdjunction.dto.patient.EditPatientRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +22,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -61,4 +63,27 @@ public class PatientServiceTest {
                                 fieldWithPath("phone_no").description("전화번호")
                         )));
     }
+    @Test
+    @DisplayName("환자수정")
+    void 환자수정() throws Exception{
+
+        String body = objectMapper.writeValueAsString(
+                new EditPatientRequest(1,"이창택","M","19941014","010897312572"));
+
+        mockMvc.perform(
+                        put("/patient").content(body)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("patient/edit",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("patient_id").description("사용자 ID"),
+                                fieldWithPath("patient_nm").description("환자명"),
+                                fieldWithPath("gender_cd").description("성별"),
+                                fieldWithPath("birth").description("생년월일"),
+                                fieldWithPath("phone_no").description("전화번호")
+                        )));
+    }
+
 }
