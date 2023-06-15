@@ -70,6 +70,7 @@ public class PatientServiceTest {
         String body = objectMapper.writeValueAsString(
                 new EditPatientRequest(1,"이창택","M","19941014","010897312572"));
 
+
         mockMvc.perform(
                         put("/patient").content(body)
                                 .contentType(MediaType.APPLICATION_JSON))
